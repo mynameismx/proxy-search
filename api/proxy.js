@@ -44,8 +44,6 @@ Disallow: /`;
 
     text = replaceLoginStatus(text);
 
-    text = insertGoogleTagManager(text);
-
     body = new TextEncoder().encode(text).buffer;
   }
 
@@ -68,16 +66,4 @@ function replaceLoginStatus(text) {
   const loginStatusRegex = /<div id="login-status">.*?<\/div>/s;
   const newContent = '<div id="login-status"><a href="http://castopia.ct.ws" class="login-status-create-account btn">Прокси-зеркало</a> <span>|</span> <a href="http://wd.castopia.ct.ws" class="login-status-sign-in btn btn-primary">Wikidot</a></div>';
   return text.replace(loginStatusRegex, newContent);
-}
-
-function insertGoogleTagManager(text) {
-  const gtmScript = `<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-N2KV4N8T');</script>
-<!-- End Google Tag Manager -->`;
-
-  return text.replace(/<\/head>/i, `${gtmScript}</head>`);
 }
