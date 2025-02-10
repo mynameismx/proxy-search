@@ -79,5 +79,5 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-N2KV4N8T');</script>
 <!-- End Google Tag Manager -->`;
 
-  return text.replace(/<head>/i, `<head>${gtmScript}`);
+  return text.replace(/<\/head>/i, `${gtmScript}</head>`);
 }
