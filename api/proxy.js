@@ -36,18 +36,13 @@ Disallow: /`;
   if (contentType && /^(application\/x-javascript|text\/)/i.test(contentType)) {
     let text = new TextDecoder('utf-8').decode(body);
 
-    // Skip modifying URLs for http://www.w3.org/2000/svg
     text = text.replace(new RegExp(`(//|https?://)(?!www\.w3\.org/2000/svg)(${targetDomains.join('|')})`, 'g'), `$1${host}`);
 
-    // Modify http URLs, except those starting with http://www.w3.org/2000/svg
     text = text.replace(/http:\/\/(?!localhost|127\.0\.0\.1|www\.w3\.org\/2000\/svg)([^"']+)/g, 'https://$1');
 
     text = removeAdScripts(text);
 
     text = replaceLoginStatus(text);
-
-    // Добавляем Google Tag Manager в конец тега <head>
-    text = insertGoogleTagManager(text);
 
     body = new TextEncoder().encode(text).buffer;
   }
@@ -71,16 +66,4 @@ function replaceLoginStatus(text) {
   const loginStatusRegex = /<div id="login-status">.*?<\/div>/s;
   const newContent = '<div id="login-status"><a href="http://castopia.ct.ws" class="login-status-create-account btn">Прокси-зеркало</a> <span>|</span> <a href="http://wd.castopia.ct.ws" class="login-status-sign-in btn btn-primary">Wikidot</a></div>';
   return text.replace(loginStatusRegex, newContent);
-}
-
-function insertGoogleTagManager(text) {
-  const gtmScript = `<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-N2KV4N8T');</script>
-<!-- End Google Tag Manager -->`;
-
-  return text.replace(/<head>/i, `<head>${gtmScript}`);
 }
