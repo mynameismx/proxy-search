@@ -33,6 +33,12 @@ Disallow: /`;
   let body = await response.arrayBuffer();
   const contentType = response.headers.get('content-type');
 
+  if (contentType && /^(image\/|application\/octet-stream)/i.test(contentType)) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', contentType);
+    return res.status(response.status).send(Buffer.from(body));
+  }
+
   if (contentType && /^(application\/x-javascript|text\/)/i.test(contentType)) {
     let text = new TextDecoder('utf-8').decode(body);
 
