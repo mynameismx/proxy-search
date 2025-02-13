@@ -40,8 +40,6 @@ Disallow: /`;
 
     text = text.replace(/http:\/\/(?!localhost|127\.0\.0\.1|www\.w3\.org\/2000\/svg)([^"']+)/g, 'https://$1');
 
-    text = removeAdScripts(text);
-
     text = replaceLoginStatus(text);
 
     body = new TextEncoder().encode(text).buffer;
@@ -50,16 +48,6 @@ Disallow: /`;
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', contentType);
   res.status(response.status).send(Buffer.from(body));
-}
-
-function removeAdScripts(text) {
-  return text.replace(/<script[^>]*>(.*?)<\/script>/gs, (match, scriptContent) => {
-    if (/\"wording\"\s*:\s*\"Report Ad\"/.test(scriptContent) ||
-        /(floors\.nitropay\.com|id5-sync\.com)/.test(scriptContent)) {
-      return '';
-    }
-    return match;
-  });
 }
 
 function replaceLoginStatus(text) {
