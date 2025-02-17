@@ -3,8 +3,7 @@ export default async function handler(req, res) {
   const { host, pathname } = url;
 
   if (pathname === '/robots.txt') {
-    const robots = `User-agent: *
-Disallow: /`;
+    const robots = `User-agent: *\nDisallow: /`;
     return res.status(200).send(robots);
   }
 
@@ -36,10 +35,18 @@ Disallow: /`;
   if (contentType && /^(application\/x-javascript|text\/)/i.test(contentType)) {
     let text = new TextDecoder('utf-8').decode(body);
 
+    // Заменяем все ссылки на проксируемые
     text = text.replace(new RegExp(`(//|https?://)(?!www\.w3\.org/2000/svg)(${targetDomains.join('|')})`, 'g'), `$1${host}`);
-
     text = text.replace(/http:\/\/(?!localhost|127\.0\.0\.1|www\.w3\.org\/2000\/svg)([^"']+)/g, 'https://$1');
 
+    // Обрабатываем формы
+    const formActionRegex = /<form.*?action="([^"]+)"/g;
+    text = text.replace(formActionRegex, (match, action) => {
+      const proxyAction = `https://${host}${action}`;
+      return match.replace(action, proxyAction);
+    });
+
+    // Обновляем статус логина
     text = replaceLoginStatus(text);
 
     body = new TextEncoder().encode(text).buffer;
