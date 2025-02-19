@@ -7,8 +7,8 @@ export default async function handler(req, res) {
     return res.status(200).send(robots);
   }
 
-  const targetDomains = ['castopia-wiki.wikidot.com', 'www.wikidot.com', 'castopia-wiki.wdfiles.com', 'd3g0gp89917ko0.cloudfront.net'];
-  let targetDomain = 'castopia-wiki.wikidot.com';
+  const targetDomains = ['search.yahoo.com'];
+  let targetDomain = 'search.yahoo.com';
 
   if (targetDomains.some(domain => host.endsWith(domain))) {
     targetDomain = host;
