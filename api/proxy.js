@@ -7,8 +7,8 @@ export default async function handler(req, res) {
     return res.status(200).send(robots);
   }
 
-  const targetDomains = ['scpfoundation.net'];
-  let targetDomain = 'scpfoundation.net';
+  const targetDomains = ['www.bing.com'];
+  let targetDomain = 'www.bing.com';
 
   if (targetDomains.some(domain => host.endsWith(domain))) {
     targetDomain = host;
@@ -34,7 +34,6 @@ export default async function handler(req, res) {
 
   if (contentType && /^(application\/x-javascript|text\/)/i.test(contentType)) {
     let text = new TextDecoder('utf-8').decode(body);
-
     body = new TextEncoder().encode(text).buffer;
   }
 
