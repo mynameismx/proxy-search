@@ -7,8 +7,8 @@ export default async function handler(req, res) {
     return res.status(200).send(robots);
   }
 
-  const targetDomains = ['search.yahoo.com'];
-  let targetDomain = 'search.yahoo.com';
+  const targetDomains = ['scpfoundation.net'];
+  let targetDomain = 'scpfoundation.net';
 
   if (targetDomains.some(domain => host.endsWith(domain))) {
     targetDomain = host;
@@ -35,27 +35,10 @@ export default async function handler(req, res) {
   if (contentType && /^(application\/x-javascript|text\/)/i.test(contentType)) {
     let text = new TextDecoder('utf-8').decode(body);
 
-    text = text.replace(new RegExp(`(//|https?://)(?!www\.w3\.org/2000/svg)(${targetDomains.join('|')})`, 'g'), `$1${host}`);
-    text = text.replace(/http:\/\/(?!localhost|127\.0\.0\.1|www\.w3\.org\/2000\/svg)([^"']+)/g, 'https://$1');
-
-    const formActionRegex = /<form.*?action="([^"]+)"/g;
-    text = text.replace(formActionRegex, (match, action) => {
-      const proxyAction = `https://${host}${action}`;
-      return match.replace(action, proxyAction);
-    });
-
-    text = replaceLoginStatus(text);
-
     body = new TextEncoder().encode(text).buffer;
   }
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', contentType);
   res.status(response.status).send(Buffer.from(body));
-}
-
-function replaceLoginStatus(text) {
-  const loginStatusRegex = /<div id="login-status">.*?<\/div>/s;
-  const newContent = '<div id="login-status"><a href="http://castopia.ct.ws" class="login-status-create-account btn">Прокси-зеркало</a> <span>|</span> <a href="http://wd.castopia.ct.ws" class="login-status-sign-in btn btn-primary">Wikidot</a></div>';
-  return text.replace(loginStatusRegex, newContent);
 }
