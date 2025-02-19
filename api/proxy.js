@@ -7,8 +7,8 @@ export default async function handler(req, res) {
     return res.status(200).send(robots);
   }
 
-  const targetDomains = ['www.bing.com'];
-  let targetDomain = 'www.bing.com';
+  const targetDomains = ['duckduckgo.com'];
+  let targetDomain = 'duckduckgo.com';
 
   if (targetDomains.some(domain => host.endsWith(domain))) {
     targetDomain = host;
